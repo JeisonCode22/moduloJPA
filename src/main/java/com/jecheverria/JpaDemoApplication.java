@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import com.jecheverria.model.Categoria;
 import com.jecheverria.repository.CategoriasRepository;
@@ -24,7 +27,33 @@ public class JpaDemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		guardarTodas();
+		buscarTodoPaginacion();
+	}
+
+	private void buscarTodoPaginacion() {
+		Page<Categoria> page = repo.findAll(PageRequest.of(0, 5,Sort.by("nombre")));
+		for (Categoria c : page.getContent()) {
+			System.out.println(c.getId() + " " + c.getNombre());
+		}
+
+	}
+
+	private void buscarTodosOrdenados() {
+		List<Categoria> categorias = repo.findAll(Sort.by("nombre").descending());
+		for (Categoria c : categorias) {
+			System.out.println(c.getId() + " " + c.getNombre());
+		}
+	}
+
+	private void borrarTodoEnBloque() {
+		repo.deleteAllInBatch();
+	}
+
+	private void buscarTodosJpa() {
+		List<Categoria> categorias = repo.findAll();
+		for (Categoria c : categorias) {
+			System.out.println(c.getId() + " " + c.getNombre());
+		}
 	}
 
 	private void guardarTodas() {
