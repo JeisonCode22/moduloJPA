@@ -40,7 +40,40 @@ public class JpaDemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		buscarUsuario();
+		BuscarVacantesVariosEstatus();
+	}
+
+	private void buscarVacantesSalario() {
+		List<Vacante> lista = repoVacantes.findBySalarioBetweenOrderBySalarioDesc(7000.0, 14000.0);
+		System.out.println("Registros encontrados: " + lista.size());
+		for (Vacante v : lista) {
+			System.out.println(v.getId() + " " + v.getNombre() + " $" + v.getSalario());
+		}
+	}
+
+	private void BuscarVacantesVariosEstatus() {
+		String[] estatus = new String[] { "Eliminada", "Creada" };
+		List<Vacante> lista = repoVacantes.findByEstatusIn(estatus);
+		System.out.println("Registros encontrados: " + lista.size());
+		for (Vacante v : lista) {
+			System.out.println(v.getId() + " " + v.getNombre() + " " + v.getEstatus());
+		}
+	}
+
+	private void buscarVacantesPorDestacadoEstatus() {
+		List<Vacante> lista = repoVacantes.findByDestacadoAndEstatusOrderByIdDesc(1, "Aprobada");
+		System.out.println("Registros encontrados: " + lista.size());
+		for (Vacante v : lista) {
+			System.out.println(v.getId() + " " + v.getNombre() + " " + v.getEstatus() + " " + v.getDestacado());
+		}
+	}
+
+	private void buscarVacantesPorStatus() {
+		List<Vacante> lista = repoVacantes.findByEstatus("Aprobada");
+		System.out.println("Registros encontrados: " + lista.size());
+		for (Vacante v : lista) {
+			System.out.println(v.getId() + " " + v.getNombre() + " " + v.getEstatus());
+		}
 	}
 
 	private void buscarUsuario() {
@@ -60,16 +93,16 @@ public class JpaDemoApplication implements CommandLineRunner {
 
 	private void crearUsuarioConUnPerfil() {
 		Usuario user = new Usuario();
-		user.setNombre("Jeison Echeverria");
-		user.setEmail("jeison@mail.com");
+		user.setNombre("Tashell Jimenez");
+		user.setEmail("tashell@mail.com");
 		user.setFechaRegistro(new Date());
-		user.setUsername("jEcheverria");
-		user.setPassword("12345");
-		user.setEstatus(1);
+		user.setUsername("tJimenez");
+		user.setPassword("123456");
+		user.setEstatus(0);
 		Perfil per1 = new Perfil();
-		per1.setId(2);
+		per1.setId(1);
 		Perfil per2 = new Perfil();
-		per2.setId(3);
+		per2.setId(2);
 		user.agregar(per1);
 		user.agregar(per2);
 		repoUsuarios.save(user);
