@@ -16,10 +16,16 @@ import org.springframework.data.domain.Sort;
 import com.jecheverria.model.Categoria;
 import com.jecheverria.model.Vacante;
 import com.jecheverria.repository.CategoriasRepository;
+import com.jecheverria.repository.PerfilesRepository;
+import com.jecheverria.repository.UsuarioRepository;
 import com.jecheverria.repository.VacantesRepository;
 
 @SpringBootApplication
 public class JpaDemoApplication implements CommandLineRunner {
+	@Autowired
+	private UsuarioRepository repoUsuarios;
+	@Autowired
+	private PerfilesRepository repoPerfiles;
 	@Autowired
 	private VacantesRepository repoVacantes;
 	@Autowired
