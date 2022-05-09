@@ -1,5 +1,6 @@
 package com.jecheverria;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import com.jecheverria.model.Categoria;
+import com.jecheverria.model.Perfil;
 import com.jecheverria.model.Vacante;
 import com.jecheverria.repository.CategoriasRepository;
 import com.jecheverria.repository.PerfilesRepository;
@@ -37,7 +39,11 @@ public class JpaDemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		guardarVacante();
+		crearPerfilesAplicacion();
+	}
+
+	private void crearPerfilesAplicacion() {
+		repoPerfiles.saveAll(getPerfilesAplicacion());
 	}
 
 	private void guardarVacante() {
@@ -177,6 +183,20 @@ public class JpaDemoApplication implements CommandLineRunner {
 		lista.add(cat1);
 		lista.add(cat2);
 		lista.add(cat3);
+		return lista;
+	}
+
+	private List<Perfil> getPerfilesAplicacion() {
+		List<Perfil> lista = new ArrayList<Perfil>();
+		Perfil per1 = new Perfil();
+		per1.setPerfil("SUPERVISOR");
+		Perfil per2 = new Perfil();
+		per2.setPerfil("ADMINISTRADOR");
+		Perfil per3 = new Perfil();
+		per3.setPerfil("USUARIO");
+		lista.add(per1);
+		lista.add(per2);
+		lista.add(per3);
 		return lista;
 	}
 
