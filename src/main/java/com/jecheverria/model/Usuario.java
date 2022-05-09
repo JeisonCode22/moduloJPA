@@ -1,8 +1,18 @@
 package com.jecheverria.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "usuarios")
@@ -16,6 +26,20 @@ public class Usuario {
 	private String password;
 	private Integer estatus;
 	private Date fechaRegistro;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "usuarioperfil", 
+	joinColumns = @JoinColumn(name = "idUsuario"), 
+	inverseJoinColumns = @JoinColumn(name = "idPerfil"))
+	private List<Perfil> perfiles;
+	
+	public void agregar(Perfil tmpPerfil) {
+		if(perfiles == null) {
+			perfiles = new ArrayList<Perfil>();
+			perfiles.add(tmpPerfil);
+		}else {
+			perfiles.add(tmpPerfil);
+		}
+	}
 
 	public Integer getId() {
 		return id;
@@ -71,6 +95,14 @@ public class Usuario {
 
 	public void setFechaRegistro(Date fechaRegistro) {
 		this.fechaRegistro = fechaRegistro;
+	}
+
+	public List<Perfil> getPerfiles() {
+		return perfiles;
+	}
+
+	public void setPerfiles(List<Perfil> perfiles) {
+		this.perfiles = perfiles;
 	}
 
 }

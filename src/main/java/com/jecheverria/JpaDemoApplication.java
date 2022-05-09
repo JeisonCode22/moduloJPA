@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 
 import com.jecheverria.model.Categoria;
 import com.jecheverria.model.Perfil;
+import com.jecheverria.model.Usuario;
 import com.jecheverria.model.Vacante;
 import com.jecheverria.repository.CategoriasRepository;
 import com.jecheverria.repository.PerfilesRepository;
@@ -39,7 +40,39 @@ public class JpaDemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		crearPerfilesAplicacion();
+		buscarUsuario();
+	}
+
+	private void buscarUsuario() {
+		Optional<Usuario> optional = repoUsuarios.findById(2);
+		if (optional.isPresent()) {
+			Usuario u = optional.get();
+			System.out.println("Usuario: " + u.getNombre());
+			System.out.println("Perfiles asignados: ");
+			for (Perfil p : u.getPerfiles()) {
+				System.out.println(p.getPerfil());
+			}
+		} else {
+			System.out.println("Usuario no encontrado");
+		}
+
+	}
+
+	private void crearUsuarioConUnPerfil() {
+		Usuario user = new Usuario();
+		user.setNombre("Jeison Echeverria");
+		user.setEmail("jeison@mail.com");
+		user.setFechaRegistro(new Date());
+		user.setUsername("jEcheverria");
+		user.setPassword("12345");
+		user.setEstatus(1);
+		Perfil per1 = new Perfil();
+		per1.setId(2);
+		Perfil per2 = new Perfil();
+		per2.setId(3);
+		user.agregar(per1);
+		user.agregar(per2);
+		repoUsuarios.save(user);
 	}
 
 	private void crearPerfilesAplicacion() {
