@@ -1,5 +1,6 @@
 package com.jecheverria;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -13,13 +14,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import com.jecheverria.model.Categoria;
+import com.jecheverria.model.Vacante;
 import com.jecheverria.repository.CategoriasRepository;
+import com.jecheverria.repository.VacantesRepository;
 
 @SpringBootApplication
 public class JpaDemoApplication implements CommandLineRunner {
-
 	@Autowired
-	private CategoriasRepository repo;
+	private VacantesRepository repoVacantes;
+	@Autowired
+	private CategoriasRepository repoCategorias;
 
 	public static void main(String[] args) {
 		SpringApplication.run(JpaDemoApplication.class, args);
@@ -27,11 +31,35 @@ public class JpaDemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		buscarTodoPaginacion();
+		guardarVacante();
+	}
+
+	private void guardarVacante() {
+		Vacante vacante = new Vacante();
+		vacante.setNombre("Profesor de matematicas");
+		vacante.setDescripcion("Se solcita profesor de matematicas");
+		vacante.setFecha(new Date());
+		vacante.setSalario(8500.00);
+		vacante.setEstatus("Aprobada");
+		vacante.setDestacado(0);
+		vacante.setImagen("escuela.png");
+		vacante.setDetalles("los requisitos para profesor de matematicas");
+		Categoria cat = new Categoria();
+		cat.setId(15);
+		vacante.setCategoria(cat);
+
+		repoVacantes.save(vacante);
+	}
+
+	private void buscarVacantes() {
+		List<Vacante> lista = repoVacantes.findAll();
+		for (Vacante v : lista) {
+			System.out.println(v.getId() + " " + v.getNombre() + " " + v.getCategoria().getNombre());
+		}
 	}
 
 	private void buscarTodoPaginacion() {
-		Page<Categoria> page = repo.findAll(PageRequest.of(0, 5,Sort.by("nombre")));
+		Page<Categoria> page = repoCategorias.findAll(PageRequest.of(0, 5, Sort.by("nombre")));
 		for (Categoria c : page.getContent()) {
 			System.out.println(c.getId() + " " + c.getNombre());
 		}
@@ -39,18 +67,18 @@ public class JpaDemoApplication implements CommandLineRunner {
 	}
 
 	private void buscarTodosOrdenados() {
-		List<Categoria> categorias = repo.findAll(Sort.by("nombre").descending());
+		List<Categoria> categorias = repoCategorias.findAll(Sort.by("nombre").descending());
 		for (Categoria c : categorias) {
 			System.out.println(c.getId() + " " + c.getNombre());
 		}
 	}
 
 	private void borrarTodoEnBloque() {
-		repo.deleteAllInBatch();
+		repoCategorias.deleteAllInBatch();
 	}
 
 	private void buscarTodosJpa() {
-		List<Categoria> categorias = repo.findAll();
+		List<Categoria> categorias = repoCategorias.findAll();
 		for (Categoria c : categorias) {
 			System.out.println(c.getId() + " " + c.getNombre());
 		}
@@ -58,16 +86,16 @@ public class JpaDemoApplication implements CommandLineRunner {
 
 	private void guardarTodas() {
 		List<Categoria> categorias = getlistaCategorias();
-		repo.saveAll(categorias);
+		repoCategorias.saveAll(categorias);
 	}
 
 	private void existeId() {
-		boolean existe = repo.existsById(1);
+		boolean existe = repoCategorias.existsById(1);
 		System.out.println("La categoria existe: " + existe);
 	}
 
 	private void buscarTodos() {
-		Iterable<Categoria> categorias = repo.findAll();
+		Iterable<Categoria> categorias = repoCategorias.findAll();
 		for (Categoria c : categorias) {
 			System.out.println(c);
 		}
@@ -78,32 +106,32 @@ public class JpaDemoApplication implements CommandLineRunner {
 		ids.add(1);
 		ids.add(4);
 		ids.add(10);
-		Iterable<Categoria> categoria = repo.findAllById(ids);
+		Iterable<Categoria> categoria = repoCategorias.findAllById(ids);
 		for (Categoria c : categoria) {
 			System.out.println(c);
 		}
 	}
 
 	private void eliminarTodos() {
-		repo.deleteAll();
+		repoCategorias.deleteAll();
 	}
 
 	private void conteo() {
-		long count = repo.count();
+		long count = repoCategorias.count();
 		System.out.println("Total categorias: " + count);
 	}
 
 	private void eliminar() {
-		repo.deleteById(1);
+		repoCategorias.deleteById(1);
 	}
 
 	private void modificar() {
-		Optional<Categoria> optional = repo.findById(1);
+		Optional<Categoria> optional = repoCategorias.findById(1);
 		if (optional.isPresent()) {
 			Categoria catTmp = optional.get();
 			catTmp.setNombre("Ing. de software");
 			catTmp.setDescripcion("Desarrollo de sistemas");
-			repo.save(catTmp);
+			repoCategorias.save(catTmp);
 			System.out.println(optional.get());
 		} else {
 			System.out.println("Categoria NO encontrada");
@@ -111,7 +139,7 @@ public class JpaDemoApplication implements CommandLineRunner {
 	}
 
 	private void buscarPorId() {
-		Optional<Categoria> optional = repo.findById(1);
+		Optional<Categoria> optional = repoCategorias.findById(1);
 		if (optional.isPresent()) {
 			System.out.println(optional.get());
 		} else {
@@ -123,7 +151,7 @@ public class JpaDemoApplication implements CommandLineRunner {
 		Categoria cat = new Categoria();
 		cat.setNombre("Finanzas");
 		cat.setDescripcion("Trabajo relacionado con finanzas y contabilidad");
-		repo.save(cat);
+		repoCategorias.save(cat);
 	}
 
 	private List<Categoria> getlistaCategorias() {
